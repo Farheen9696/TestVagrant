@@ -1,35 +1,38 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class UserPlaylist {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         String userName;
+        int n=3;
         Scanner scanner = new Scanner(System.in);
-        HashMap<String, ArrayBlockingQueue<String>> userMap = new HashMap<>();
-        while (true){
-            System.out.println("**********Welcome to my playlist store***********");
-            System.out.println("Pls enter your user name :");
-            userName = scanner.nextLine(); 
+        InputStreamReader isr=new InputStreamReader(System.in);
+        BufferedReader br=new BufferedReader(isr);
+        HashMap<String, Queue<String>> userMap = new HashMap<>();
+        Queue<String> playlistSong=null;
+        boolean choice=true;
+        System.out.println("**********Welcome to my playlist store***********");
+        System.out.println("Pls enter your user name :");
+        userName = scanner.nextLine(); 
+        while (choice){
             if (userMap.containsKey(userName)){  
-                ArrayBlockingQueue<String> playlistSong = userMap.get(userName);
-                userPlaylist(scanner,playlistSong);
+                playlistSong = userMap.get(userName);
             }else{
-                ArrayBlockingQueue<String> songsStore = new ArrayBlockingQueue<>(3);
-                userMap.put(userName,songsStore);
-                userPlaylist(scanner,songsStore);
+                playlistSong = new LinkedList<>();
+                userMap.put(userName,playlistSong);
+                System.out.println(userMap.get(userName));
             }
+            System.out.println("Enter song to add:");
+            String song=br.readLine();
+            if(playlistSong.size()==n) {
+                playlistSong.remove();
+            }
+            playlistSong.add(song);
+            System.out.println("do you want to add more:(0/1)");
+            choice=scanner.nextInt()==0?false:true;
+            System.out.println(userMap.get(userName));
         }
-    }
-
-    private static void userPlaylist(Scanner scanner,ArrayBlockingQueue<String> playlistSong) {
-        System.out.println("Pls enter your song name :");
-        String songName = scanner.nextLine();
-        if (playlistSong.size() == 3){
-            playlistSong.remove();
-            playlistSong.offer(songName);
-        }else{
-            playlistSong.offer(songName);
-        }
-        System.out.println("Your recent play list:"+playlistSong);
+        scanner.close();
     }
 }
